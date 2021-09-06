@@ -1,11 +1,71 @@
 import "./App.css";
 import Todo from "../src/components/todo/Todo";
 
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Link,
+  Redirect,
+} from "react-router-dom";
+import { Home, Login, Profile } from "./pages";
+
+const isAuth = true;
+
+function PrivateRoute({ children, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={() => {
+        if (isAuth) {
+          return children;
+        } else {
+          return <Redirect to="/login" />;
+        }
+      }}
+    />
+  );
+}
+
 const App = () => {
   return (
-    <div className="App">
-      <Todo />
-    </div>
+    <Router>
+      <div className="App">
+        <div>
+          <Link to="/">/Home</Link> <Link to="/profile"> /Profile</Link>
+          <Link to="/login"> /Login</Link>
+          <hr />
+        </div>
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          {/* private route */}
+          {/* <Route
+          path="/profile"
+          render={() => {
+            // logic
+            if (isAuth) {
+              return <Profile />;
+            } else {
+              return <Redirect to="/login" />;
+            }
+          }}
+        /> */}
+
+          <PrivateRoute path="/profile">
+            <Profile />
+          </PrivateRoute>
+        </Switch>
+      </div>
+    </Router>
+
+    // <div className="App">
+    //   <Todo />
+    // </div>
   );
 };
 
